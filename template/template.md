@@ -13,4 +13,4 @@
 | Games Played | $($Player.TotalGames)   | $($Player.TotalRankedGames) | $($Player.TotalUnrankedGames) |
 | Games Won    | $($Player.TotalWins)    | $($Player.RankedWins)       | $($Player.UnrankedWins)       |
 | Games Lost   | $($Player.TotalLose)    | $($Player.RankedLose)       | $($Player.UnrankedLose)       |
-| Win Rate     | $($Player.TotalWinRate) | $($Player.RankedWinRate)    | $($Player.UnrankedWinRate)    |
+| Win Rate     | $($Player.TotalWinRate)%  | $($Player.RankedWinRate)%    | $($Player.UnrankedWinRate)%    |
