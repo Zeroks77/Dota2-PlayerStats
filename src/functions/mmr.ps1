@@ -6,14 +6,70 @@ function Get-PlayerData {
         $response = Invoke-WebRequest -Uri 'https://api.stratz.com/api/v1/Player/183063377' -Method GET
         return $response | ConvertFrom-Json;
 }
-function Get-Player {
+
+function Get-PlayerActivity{
+    $response = Invoke-WebRequest -Uri 'https://api.stratz.com/api/v1/Player/183063377/behaviorChart' -Method GET
+    return $response | ConvertFrom-Json
+}
+function Get-PlayerData {
     [Player] $Player = [Player]::new();
-    $templateText = (Get-Content ".\template\template.md" -Raw);
+    $templateText = (Get-Content ".\template\Markdown\template.md" -Raw);
 	$placeholderForQuote = (New-Guid).Guid;
     $templateText = $templateText.Replace('"', $placeholderForQuote);
     $templateText = Invoke-Expression """$templateText""";
     $templateText = $templateText.Replace($placeholderForQuote, '"');
     Out-File -Force -FilePath ".\Readme.md" -InputObject $templateText;
+}
+
+function Get-Activity {
+    $PlayerActivity = [PlayerActivity]::new();
+    $templateText = (Get-Content ".\template\HTML\chart.html" -Raw);
+	$placeholderForQuote = (New-Guid).Guid;
+    $templateText = $templateText.Replace('"', $placeholderForQuote);
+    $templateText = Invoke-Expression """$templateText""";
+    $templateText = $templateText.Replace($placeholderForQuote, '"');
+    Out-File -Force -FilePath ".\Chart.Html" -InputObject $templateText;
+}
+
+function Get-Heros {
+    $response = Invoke-WebRequest -Uri 'https://api.stratz.com/api/v1/Hero' -Method GET
+    return $response | ConvertFrom-Json
+}
+
+class PlayerActivity{
+    [Hero[]] $heroes;
+
+    PlayerActivity() {
+        $PlayerActivityMetadata = Get-PlayerActivity;
+        $heroesMetadata = Get-Heros;
+        foreach ($item in $PlayerActivityMetadata.heroes) {
+            $this.heroes += Get-Hero -HeroId $item.heroId -heroData $heroesMetadata -winCount $item.winCount -matchCount $item.matchCount
+        }
+    }
+}
+
+function Get-Hero{
+    param( [int] $HeroId, $heroData, $winCount, $matchCount)
+
+    for ($i = 1; $i -lt 130; $i++) {
+        if ($herodata.$i.id -eq $HeroId) {
+            return [Hero]::new($herodata.$i.id, $herodata.$i.DisplayName, $winCount,  $matchCount )
+        }
+    }
+
+
+}
+class Hero{
+    [string] $Name;
+    [int] $Games;
+    [int] $WinCount;
+    [int] $Id;
+    Hero([int] $id, [string]$name ,[int]$winCount, [int]$games) {
+        $this.Name = $name;
+        $this.Id = $id;
+        $this.Games = $games
+        $this.WinCount = $winCount;
+    }
 }
 
 class Player {
