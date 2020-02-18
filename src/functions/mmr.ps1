@@ -18,6 +18,9 @@ function Build-ActivityString {
         [PlayerActivity] $PlayerActivity
     )
     [string] $outputString = "|      Hero        | Games               | Won with                     | Win Rate| Main Role|`r`n| ------------| ------------ | ------------ | ----------------------- | --------------------------- |";
+    
+    $PlayerActivity.heroes = $PlayerActivity.heroes | sort Games -descending;
+    
     foreach ($item in $PlayerActivity.heroes) {
         $winrate = [math]::Round($item.WinCount / $item.Games * 100, 2);
         $outputString += "`r`n|$($item.Name)|$($item.Games)|$($item.WinCount)|$winrate %|$($item.MainRole)| ";
