@@ -15,4 +15,8 @@
 | Games Lost   | $($Player.TotalLose)    | $($Player.RankedLose)       | $($Player.UnrankedLose)       |
 | Win Rate     | $($Player.TotalWinRate)%  | $($Player.RankedWinRate)%    | $($Player.UnrankedWinRate)%    |
 
+## Activity over Last 25 Matches
 
+
+
+$Activity
