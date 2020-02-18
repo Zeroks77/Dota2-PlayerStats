@@ -1,4 +1,17 @@
 ﻿. .\src\functions\apiCalls.ps1
+. .\src\functions\badge.ps1
+
+function Get-Stats {
+    [Player] $Player = [Player]::new();
+    $PlayerActivity = New-Object PlayerActivity
+    $Activity = Build-ActivityString -PlayerActivity $PlayerActivity
+    $templateText = (Get-Content ".\template\Markdown\template.md" -Raw);
+    $placeholderForQuote = (New-Guid).Guid;
+    $templateText = $templateText.Replace('"', $placeholderForQuote);
+    $templateText = Invoke-Expression """$templateText""";
+    $templateText = $templateText.Replace($placeholderForQuote, '"');
+    Out-File -Force -FilePath ".\Readme.md" -InputObject $templateText;
+}
 
 function Build-ActivityString {
     param (
@@ -93,7 +106,6 @@ class Player {
     [Double] $UnrankedWinRate;
 
     Player() {
-        . ".\src\functions\badge.ps1";
         $metaData = Get-PlayerData;
         $this.Name = $metaData.steamAccount.name;
         $this.CoreBadge = Get-RankBadge -Rank $metaData.steamAccount.seasonRankCore;
