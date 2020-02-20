@@ -39,11 +39,11 @@ function Build-RankedActivityString {
         $winrate = [math]::Round($item.WinCount / $item.Games * 100, 2);
         $outputString += "`r`n|$($item.Name)|$($item.Games)|$($item.WinCount)|$winrate %|$($item.MainRole)| ";
         if ($winrate -gt 60) {
-            $outputString += "<img src=""https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.iconfinder.com%2Ficons%2F1606346%2Farrow_direction_green_up_icon&psig=AOvVaw3Na39JuBj5BAy0ecNop6l1&ust=1582271778009000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCKj2kO3T3-cCFQAAAAAdAAAAABAD"" alt=""Recommended"" width=""50""/>"
+            $outputString += "<img src=""https://image.flaticon.com/icons/png/512/2268/2268453.png"" alt=""Recommended"" width=""25""/>"
         }elseif ($winrate -lt 60 -and $winrate -gt 45) {
-             $outputString += "<img src=""hhttps://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.iconfinder.com%2Ficons%2F1626701%2Farrow_arrows_circle_direction_next_right_yellow_icon&psig=AOvVaw3en-At-FTrcNj4z4LSB9qA&ust=1582271904840000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCJCHv7DU3-cCFQAAAAAdAAAAABAE"" alt=""Playable but not recommended"" width=""50""/>"
+             $outputString += "<img src=""https://image.flaticon.com/icons/png/512/2268/2268506.png"" alt=""Playable but not recommended"" width=""25""/>"
         }else {
-            $outputString += "<img src=""https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.iconfinder.com%2Ficons%2F2003238%2Farrow_descend_down_downward_red_icon&psig=AOvVaw2WuzC1yP5h2H7MlTVwwetv&ust=1582272155320000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCNi88KLV3-cCFQAAAAAdAAAAABAD"" alt=""Not Recommended"" width=""50""/>"
+            $outputString += "<img src=""https://image.flaticon.com/icons/png/512/2268/2268512.png"" alt=""Not Recommended"" width=""25""/>"
         }
     }
     return $outputString;
