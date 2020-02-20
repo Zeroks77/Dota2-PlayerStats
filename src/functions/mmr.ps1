@@ -4,7 +4,8 @@
 function Get-Stats {
     [Player] $Player = [Player]::new();
     $PlayerActivity = New-Object PlayerActivity
-    $Activity = Build-ActivityString -PlayerActivity $PlayerActivity
+    $Activity = Build-GenerellActivityString -PlayerActivity $PlayerActivity
+    $RankedActivity = Build-RankedActivityString -PlayerActivity $PlayerActivity
     $templateText = (Get-Content ".\template\Markdown\template.md" -Raw);
     $placeholderForQuote = (New-Guid).Guid;
     $templateText = $templateText.Replace('"', $placeholderForQuote);
@@ -13,31 +14,54 @@ function Get-Stats {
     Out-File -Force -FilePath ".\Readme.md" -InputObject $templateText;
 }
 
-function Build-ActivityString {
+function Build-GenerellActivityString {
     param (
         [PlayerActivity] $PlayerActivity
     )
     [string] $outputString = "|      Hero        | Games               | Won with                     | Win Rate| Main Role|`r`n| ------------| ------------ | ------------ | ----------------------- | --------------------------- |";
     
-    $PlayerActivity.heroes = $PlayerActivity.heroes | sort Games -descending;
-    
-    foreach ($item in $PlayerActivity.heroes) {
+    $PlayerActivity.GenerellHeroes = $PlayerActivity.GenerellHeroes | sort Games -descending;
+    foreach ($item in $PlayerActivity.GenerellHeroes) {
         $winrate = [math]::Round($item.WinCount / $item.Games * 100, 2);
         $outputString += "`r`n|$($item.Name)|$($item.Games)|$($item.WinCount)|$winrate %|$($item.MainRole)| ";
     }
     return $outputString;
 }
 
+function Build-RankedActivityString {
+    param (
+        [PlayerActivity] $PlayerActivity
+    )
+    [string] $outputString = "|      Hero        | Games               | Won with                     | Win Rate| Main Role| Recommended to Play|`r`n| ------------| ------------| ------------ | ------------ | ----------------------- | --------------------------- |";
+    
+    $PlayerActivity.RankedHeroes = $PlayerActivity.RankedHeroes | sort Games -descending;
+    foreach ($item in $PlayerActivity.RankedHeroes) {
+        $winrate = [math]::Round($item.WinCount / $item.Games * 100, 2);
+        $outputString += "`r`n|$($item.Name)|$($item.Games)|$($item.WinCount)|$winrate %|$($item.MainRole)| ";
+        if ($winrate -gt 60) {
+            $outputString += "<img src=""https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.iconfinder.com%2Ficons%2F1606346%2Farrow_direction_green_up_icon&psig=AOvVaw3Na39JuBj5BAy0ecNop6l1&ust=1582271778009000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCKj2kO3T3-cCFQAAAAAdAAAAABAD"" alt=""Recommended"" width=""50""/>"
+        }elseif ($winrate -lt 60 -and $winrate -gt 45) {
+             $outputString += "<img src=""hhttps://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.iconfinder.com%2Ficons%2F1626701%2Farrow_arrows_circle_direction_next_right_yellow_icon&psig=AOvVaw3en-At-FTrcNj4z4LSB9qA&ust=1582271904840000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCJCHv7DU3-cCFQAAAAAdAAAAABAE"" alt=""Playable but not recommended"" width=""50""/>"
+        }else {
+            $outputString += "<img src=""https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.iconfinder.com%2Ficons%2F2003238%2Farrow_descend_down_downward_red_icon&psig=AOvVaw2WuzC1yP5h2H7MlTVwwetv&ust=1582272155320000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCNi88KLV3-cCFQAAAAAdAAAAABAD"" alt=""Not Recommended"" width=""50""/>"
+        }
+    }
+    return $outputString;
+}
 
 
 class PlayerActivity {
-    [Hero[]] $heroes;
-
+    [Hero[]] $GenerellHeroes;
+    [Hero[]] $RankedHeroes;
     PlayerActivity() {
         $PlayerActivityMetadata = Get-PlayerActivity;
+        $RankedActivity = Get-PlayerRankedActivity;
         $heroesMetadata = Get-Heros;
         foreach ($item in $PlayerActivityMetadata.heroes) {
-            $this.heroes += Get-Hero -HeroId $item.heroId -heroData $heroesMetadata -winCount $item.winCount -matchCount $item.matchCount -roles $item.roles
+            $this.GenerellHeroes += Get-Hero -HeroId $item.heroId -heroData $heroesMetadata -winCount $item.winCount -matchCount $item.matchCount -roles $item.roles
+        }
+        foreach ($item in $RankedActivity.heroes) {
+            $this.RankedHeroes += Get-Hero -HeroId $item.heroId -heroData $heroesMetadata -winCount $item.winCount -matchCount $item.matchCount -roles $item.roles
         }
     }
 }
