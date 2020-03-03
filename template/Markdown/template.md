@@ -1,10 +1,8 @@
-﻿# Overview about $($Player.Name)
+# Overview about $($Player.Name)
 
-## Ranks
+## Rank
 
-|                              **Core**                              |                                **Support**                                |
-| :----------------------------------------------------------------: | :-----------------------------------------------------------------------: |
-| <img src="$($Player.CoreBadge)" alt="CoreRank Badge" width="100"/> | <img src="$($Player.SupportBadge)" alt="SupportRank Badge" width="100" /> |
+ <img src="$($Player.SupportBadge)" alt="SupportRank Badge" width="100" /> |
 
 ## Game Stats
 
