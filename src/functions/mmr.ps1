@@ -118,7 +118,7 @@ class Hero {
 class Player {
     [string] $Name;
     [string] $SupportBadge;
-    [string] $CoreBadge;
+    #[string] $CoreBadge;
     [Int] $TotalGames;
     [Int] $TotalRankedGames;
     [Int] $TotalUnrankedGames;
@@ -135,7 +135,7 @@ class Player {
     Player() {
         $metaData = Get-PlayerData;
         $this.Name = $metaData.steamAccount.name;
-        $this.CoreBadge = Get-RankBadge -Rank $metaData.steamAccount.seasonRankCore;
+        #$this.CoreBadge = Get-RankBadge -Rank $metaData.steamAccount.seasonRankCore;
         $this.SupportBadge = Get-RankBadge -Rank $metaData.steamAccount.seasonRankSupport;
         $this.TotalGames = $metaData.matchCount;
         $this.TotalWins = $metaData.winCount;
