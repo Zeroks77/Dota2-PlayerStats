@@ -38,7 +38,7 @@ function Build-RankedActivityString {
     foreach ($item in $PlayerActivity.RankedHeroes) {
         $winrate = [math]::Round($item.WinCount / $item.Games * 100, 2);
         $outputString += "`r`n|$($item.Name)|$($item.Games)|$($item.WinCount)|$winrate %|$($item.MainRole)| ";
-        if ($winrate -gt 60) {
+        if ($winrate -gt 59) {
             $outputString += "<img src=""https://image.flaticon.com/icons/png/512/2268/2268453.png"" alt=""Recommended"" width=""25""/>"
         }elseif ($winrate -lt 60 -and $winrate -gt 45) {
              $outputString += "<img src=""https://image.flaticon.com/icons/png/512/2268/2268506.png"" alt=""Playable but not recommended"" width=""25""/>"
