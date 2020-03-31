@@ -1,10 +1,8 @@
 ﻿# Overview about $($Player.Name)
 
-## Ranks
+## Season Rank
 
-|                              **Core**                              |                                **Support**                                |
-| :----------------------------------------------------------------: | :-----------------------------------------------------------------------: |
-| <img src="$($Player.CoreBadge)" alt="CoreRank Badge" width="100"/> | <img src="$($Player.SupportBadge)" alt="SupportRank Badge" width="100" /> |
+ <img src="$($Player.RankBadge)" alt="CoreRank Badge" width="100"/>
 
 ## Game Stats
 
@@ -19,6 +17,6 @@
 
 $Activity
 
-## Ranked Activity over Last 25 Ranked Matches
+## Ranked Activity over Last 25 Ranked Matches with $($PlayerActivity.WinRate)% Winrate
 
 $RankedActivity

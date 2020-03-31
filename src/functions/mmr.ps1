@@ -53,10 +53,12 @@ function Build-RankedActivityString {
 class PlayerActivity {
     [Hero[]] $GenerellHeroes;
     [Hero[]] $RankedHeroes;
+    [int] $WinRate;
     PlayerActivity() {
         $PlayerActivityMetadata = Get-PlayerActivity;
         $RankedActivity = Get-PlayerRankedActivity;
         $heroesMetadata = Get-Heros;
+        $this.WinRate = 100 * [math]::Round(($PlayerActivityMetadata.winCount / 25));  
         foreach ($item in $PlayerActivityMetadata.heroes) {
             $this.GenerellHeroes += Get-Hero -HeroId $item.heroId -heroData $heroesMetadata -winCount $item.winCount -matchCount $item.matchCount -roles $item.roles
         }
@@ -117,8 +119,7 @@ class Hero {
 
 class Player {
     [string] $Name;
-    [string] $SupportBadge;
-    [string] $CoreBadge;
+    [string] $RankBadge;
     [Int] $TotalGames;
     [Int] $TotalRankedGames;
     [Int] $TotalUnrankedGames;
@@ -135,8 +136,7 @@ class Player {
     Player() {
         $metaData = Get-PlayerData;
         $this.Name = $metaData.steamAccount.name;
-        $this.CoreBadge = Get-RankBadge -Rank $metaData.steamAccount.seasonRankCore;
-        $this.SupportBadge = Get-RankBadge -Rank $metaData.steamAccount.seasonRankSupport;
+        $this.RankBadge = Get-RankBadge -Rank $metaData.steamAccount.seasonRank;
         $this.TotalGames = $metaData.matchCount;
         $this.TotalWins = $metaData.winCount;
         $this.TotalLose = $this.TotalGames - $this.TotalWins;
