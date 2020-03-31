@@ -58,7 +58,7 @@ class PlayerActivity {
         $PlayerActivityMetadata = Get-PlayerActivity;
         $RankedActivity = Get-PlayerRankedActivity;
         $heroesMetadata = Get-Heros;
-        $this.WinRate = 100 * [math]::Round(($PlayerActivityMetadata.winCount / 25));  
+        $this.WinRate = [math]::Round(($PlayerActivityMetadata.winCount / 25) * 100, 2);  
         foreach ($item in $PlayerActivityMetadata.heroes) {
             $this.GenerellHeroes += Get-Hero -HeroId $item.heroId -heroData $heroesMetadata -winCount $item.winCount -matchCount $item.matchCount -roles $item.roles
         }
