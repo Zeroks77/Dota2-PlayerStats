@@ -4,8 +4,10 @@
 function Get-Stats {
     [Player] $Player = [Player]::new();
     $PlayerActivity = New-Object PlayerActivity
+    $PlayerPerformance = New-Object Performance;
     $Activity = Build-GenerellActivityString -PlayerActivity $PlayerActivity
     $RankedActivity = Build-RankedActivityString -PlayerActivity $PlayerActivity
+    $Performance = Build-PerformanceString -Performance $PlayerPerformance
     $templateText = (Get-Content ".\template\Markdown\template.md" -Raw);
     $placeholderForQuote = (New-Guid).Guid;
     $templateText = $templateText.Replace('"', $placeholderForQuote);
@@ -40,13 +42,44 @@ function Build-RankedActivityString {
         $outputString += "`r`n|$($item.Name)|$($item.Games)|$($item.WinCount)|$winrate %|$($item.MainRole)| ";
         if ($winrate -gt 59) {
             $outputString += "<img src=""https://image.flaticon.com/icons/png/512/2268/2268453.png"" alt=""Recommended"" width=""25""/>"
-        }elseif ($winrate -lt 60 -and $winrate -gt 45) {
-             $outputString += "<img src=""https://image.flaticon.com/icons/png/512/2268/2268506.png"" alt=""Playable but not recommended"" width=""25""/>"
-        }else {
+        }
+        elseif ($winrate -lt 60 -and $winrate -gt 45) {
+            $outputString += "<img src=""https://image.flaticon.com/icons/png/512/2268/2268506.png"" alt=""Playable but not recommended"" width=""25""/>"
+        }
+        else {
             $outputString += "<img src=""https://image.flaticon.com/icons/png/512/2268/2268512.png"" alt=""Not Recommended"" width=""25""/>"
         }
     }
     return $outputString;
+}
+
+function Build-PerformanceString {
+    param (
+        [Performance] $Performance
+    )
+    $Performance.HeroPerformance = $Performance.HeroPerformance | sort Games -descending; 
+    [string] $outputString = "|      Hero        | Games               | Won with                     | Win Rate|`r`n| ------------ | ------------ | ----------------------- | --------------------------- |";
+    foreach ($item in $Performance.HeroPerformance) {
+        if ($item.WinCount -eq 0) {
+            $winrate = 0;
+        }
+        else {
+            $winrate = [math]::Round($item.WinCount / $item.Games * 100, 2);   
+        }
+        $outputString += "`r`n|$($item.Name)|$($item.Games)|$($item.WinCount)|$winrate %|";
+    }
+    return $outputString;
+}
+
+class Performance {
+    [Hero[]] $HeroPerformance;
+    Performance() {
+        $MetaData = Get-AllTimeHeroPerformance;
+        $heroesMetadata = Get-Heros;
+        foreach ($item in $MetaData) {
+            $this.HeroPerformance += Get-HeroWithoutRole -HeroId $item.hero_id -heroData $heroesMetadata -winCount $item.win -matchCount $item.games
+        }
+    }
 }
 
 
@@ -67,7 +100,15 @@ class PlayerActivity {
         }
     }
 }
+function Get-HeroWithoutRole {
+    param( [int] $HeroId, $heroData, $winCount, $matchCount)
 
+    for ($i = 1; $i -lt 130; $i++) {
+        if ($herodata.$i.id -eq $HeroId) {
+            return [Hero]::new($herodata.$i.id, $herodata.$i.DisplayName, $winCount, $matchCount, $null)
+        }
+    }
+}
 function Get-Hero {
     param( [int] $HeroId, $heroData, $winCount, $matchCount, $roles)
 
@@ -76,8 +117,6 @@ function Get-Hero {
             return [Hero]::new($herodata.$i.id, $herodata.$i.DisplayName, $winCount, $matchCount, $roles )
         }
     }
-
-
 }
 enum Role {
     Support
@@ -90,7 +129,7 @@ class Hero {
     [int] $WinCount;
     [int] $Id;
     [Role] $MainRole
-    Hero([int] $id, [string]$name , [int]$winCount, [int]$games, $Roles ) {
+    Hero([int] $id, [string]$name , [int]$winCount, [int]$games, $Roles) {
         [int] $CarryCount = 0;
         [int] $SupportCount = 0;
         foreach ($item in $Roles) {

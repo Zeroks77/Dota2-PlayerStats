@@ -21,3 +21,8 @@ function Get-Heros {
     $response = Invoke-WebRequest -Uri 'https://api.stratz.com/api/v1/Hero' -Method GET
     return $response | ConvertFrom-Json
 }
+
+function Get-AllTimeHeroPerformance {
+    $response = Invoke-WebRequest -Uri 'https://api.opendota.com/api/players/183063377/heroes' -Method GET
+    return $response | ConvertFrom-Json
+}

@@ -20,3 +20,8 @@ $Activity
 ## Ranked Activity over Last 25 Ranked Matches with $($PlayerActivity.WinRate)% Winrate
 
 $RankedActivity
+
+
+## HeroStats
+
+$Performance
